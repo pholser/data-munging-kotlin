@@ -1,14 +1,14 @@
 package football
 
-import common.SpreadMinimizer
-import common.SpreadRecord
+import common.IntegerMinimizer
 import java.io.File
 
 fun main(args : Array<String>) {
     val lines = File("src/main/resources/football.dat").readLines()
-    val minGoalDifferential = SpreadMinimizer(
+    val minGoalDifferential = IntegerMinimizer(
             ::looksLikeAFootballRecord,
-            ::toFootballRecord)
+            ::toFootballRecord,
+            FootballRecord::goalDifferential)
             .findMin(lines)
     println(minGoalDifferential?.teamName)
 }
@@ -30,12 +30,9 @@ fun toFootballRecord(raw : String) : FootballRecord {
 data class FootballRecord(
         val teamName: String,
         val goalsFor: Int,
-        val goalsAgainst: Int) : SpreadRecord {
+        val goalsAgainst: Int) {
 
-    override fun key() : String {
-        return teamName
-    }
-    override fun spread() : Int {
+    fun goalDifferential() : Int {
         return Math.abs(goalsFor - goalsAgainst)
     }
 }
