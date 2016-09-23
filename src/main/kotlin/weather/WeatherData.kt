@@ -7,7 +7,7 @@ fun main(args : Array<String>) {
     val weatherRecords =
             lines.filter(::looksLikeAWeatherRecord)
                     .map(::toWeatherRecord)
-    println(weatherRecords.maxBy(WeatherRecord::spread)?.day)
+    println(weatherRecords.minBy(WeatherRecord::spread)?.day)
 }
 
 fun looksLikeAWeatherRecord(raw: String): Boolean {
@@ -35,6 +35,6 @@ data class WeatherRecord(
         val minTemp: Int) {
 
     fun spread() : Int {
-        return maxTemp - minTemp
+        return Math.abs(maxTemp - minTemp)
     }
 }

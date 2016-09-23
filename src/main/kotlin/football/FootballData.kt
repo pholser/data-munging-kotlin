@@ -7,7 +7,7 @@ fun main(args : Array<String>) {
     val footballRecords =
             lines.filter(::looksLikeAFootballRecord)
                     .map(::toFootballRecord)
-    println(footballRecords.maxBy(FootballRecord::spread)?.teamName)
+    println(footballRecords.minBy(FootballRecord::spread)?.teamName)
 }
 
 fun looksLikeAFootballRecord(raw: String): Boolean {
@@ -35,6 +35,6 @@ data class FootballRecord(
         val goalsAgainst: Int) {
 
     fun spread() : Int {
-        return goalsFor - goalsAgainst
+        return Math.abs(goalsFor - goalsAgainst)
     }
 }
