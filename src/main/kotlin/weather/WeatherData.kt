@@ -1,13 +1,16 @@
 package weather
 
+import common.SpreadMinimizer
+import common.SpreadRecord
 import java.io.File
 
 fun main(args : Array<String>) {
     val lines = File("src/main/resources/weather.dat").readLines()
-    val weatherRecords =
-            lines.filter(::looksLikeAWeatherRecord)
-                    .map(::toWeatherRecord)
-    println(weatherRecords.minBy(WeatherRecord::spread)?.day)
+    val minTemperatureDifferential = SpreadMinimizer(
+                ::looksLikeAWeatherRecord,
+                :: toWeatherRecord)
+            .findMin(lines)
+    println(minTemperatureDifferential?.day)
 }
 
 fun looksLikeAWeatherRecord(raw: String): Boolean {
@@ -32,9 +35,12 @@ fun sanitize(piece: String): String {
 data class WeatherRecord(
         val day: Int,
         val maxTemp: Int,
-        val minTemp: Int) {
+        val minTemp: Int) : SpreadRecord {
 
-    fun spread() : Int {
+    override fun key(): String {
+        return day.toString()
+    }
+    override fun spread() : Int {
         return Math.abs(maxTemp - minTemp)
     }
 }
