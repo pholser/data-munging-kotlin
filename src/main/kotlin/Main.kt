@@ -2,9 +2,10 @@ import java.io.File
 
 fun main(args : Array<String>) {
     val lines = File("src/main/resources/weather.dat").readLines()
-    val weatherRecords = lines.filter(::looksLikeAWeatherRecord).map(::toWeatherRecord)
+    val weatherRecords =
+            lines.filter(::looksLikeAWeatherRecord)
+                    .map(::toWeatherRecord)
     println(weatherRecords.maxBy(WeatherRecord::spread)?.day)
-
 }
 
 fun looksLikeAWeatherRecord(raw: String): Boolean {
@@ -14,9 +15,12 @@ fun looksLikeAWeatherRecord(raw: String): Boolean {
 fun toWeatherRecord(raw : String) : WeatherRecord {
     val pieces = Regex("""\s+""")
             .split(raw)
-            .filter { piece -> "" != piece }
+            .filter { piece -> piece.length > 0 }
             .map(::sanitize)
-    return WeatherRecord(pieces[0].toInt(), pieces[1].toInt(), pieces[2].toInt())
+    return WeatherRecord(
+            pieces[0].toInt(),
+            pieces[1].toInt(),
+            pieces[2].toInt())
 }
 
 fun sanitize(piece: String): String {
@@ -27,7 +31,8 @@ data class WeatherRecord(
         val day: Int,
         val maxTemp: Int,
         val minTemp: Int) {
-    fun spread(): Int {
+
+    fun spread() : Int {
         return maxTemp - minTemp
     }
 }
